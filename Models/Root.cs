@@ -3,11 +3,11 @@
     public class Root
     {
         public List<Episode> episodes { get; set; }
-        public string totalFemaleCharacters { get; set; }
-        public string totalGenderlessCharacters { get; set; }
-        public string totalGenderUnknownCharacters { get; set; }
-        public string totalLocations { get; set; }
-        public string totalMaleCharacters { get; set; }
-        public string uploadeFilePath { get; set; }
+        public int TotalLocations { get; set; }
+        public int TotalFemaleCharacters { get; set; }
+        public int TotalMaleCharacters { get; set; }
+        public int TotalGenderlessCharacters { get; set; }
+        public int TotalGenderUnknownCharacters { get; set; }
+        public string UploadeFilePath { get; set; }
     }
 }

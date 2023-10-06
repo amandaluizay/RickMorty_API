@@ -13,11 +13,9 @@ namespace EnterpriseStore.Data.Mappings
             builder.HasKey(p => p.Id);
 
             builder.Property(c => c.FilePath)
-                .IsRequired()
-                .HasColumnType("varchar(max)");
+                .HasColumnType("varchar(100)");
 
             builder.Property(c => c.CreatedTimeStamp)
-                .IsRequired()
                 .HasColumnType("DATETIME");
 
             builder.ToTable("Log");

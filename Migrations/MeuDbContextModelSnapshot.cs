@@ -3,7 +3,6 @@ using System;
 using Interview_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -18,22 +17,20 @@ namespace Interview_API.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.11")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Interview_API.Models.ReaderModel", b =>
+            modelBuilder.Entity("Interview_API.Models.LogModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreatedTimeStamp")
                         .HasColumnType("DATETIME");
 
                     b.Property<string>("FilePath")
                         .IsRequired()
-                        .HasColumnType("varchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 

@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Reflection.Metadata;
 using Interview_API.Intefaces;
 using Interview_API.Interface;
+using System.ComponentModel;
 
 namespace UploadCSVToAzureBlobStorage.Controllers
 {
@@ -30,35 +31,46 @@ namespace UploadCSVToAzureBlobStorage.Controllers
         }
 
         [HttpPost]
-        [Route("read")]
-        public async Task<List<Episode>> readEpisode(IFormFile file)
+        [Route("Upload")]
+        public async Task<Root> Upload2(IFormFile file)
         {
+            var url = modelRepository.Upload(file);
             List<Episode> episodes = new List<Episode>();
 
             try
             {
-                using (var reader = new StreamReader(file.OpenReadStream()))
+                using (var httpClient = new HttpClient())
                 {
-                    reader.ReadLine();
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        var parts = line.Split(',');
-                        if (parts.Length == 4)
-                        {
-                            int episodeId = int.Parse(parts[0]);
-                            var ep = await deserializeService.DeserializeEpisode(episodeId);
-                            episodes.Add(ep);
+                    // Faça uma solicitação HTTP GET para a URL para baixar o arquivo CSV.
+                    var response = await httpClient.GetAsync(url);
 
+                    if (response.IsSuccessStatusCode)
+                    {
+                        using (var stream = await response.Content.ReadAsStreamAsync())
+                        using (var reader = new StreamReader(stream))
+                        {
+                            reader.ReadLine(); // Descarte a primeira linha, se necessário.
+                            string line;
+                            while ((line = reader.ReadLine()) != null)
+                            {
+                                var parts = line.Split(',');
+                                if (parts.Length == 4 && !string.IsNullOrEmpty(parts[0]))
+                                {
+                                    int episodeId = int.Parse(parts[0]);
+                                    var ep = await deserializeService.DeserializeEpisode(episodeId);
+                                    episodes.Add(ep);
+                                }
+                            }
                         }
                     }
-                }
 
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An error occurred: " + ex.Message);
+                return null;
             }
+
 
             var log = new LogModel()
             {
@@ -66,11 +78,22 @@ namespace UploadCSVToAzureBlobStorage.Controllers
                 Id = new Guid(),
             };
             await modelRepository.Adicionar(log);
-            return episodes;
+
+            var root = new Root()
+            {
+                episodes = episodes,
+                TotalFemaleCharacters = modelRepository.CountTotalFemaleCharacter(episodes),
+                TotalGenderlessCharacters = modelRepository.CountTotalGenderlessCharacter(episodes),
+                TotalGenderUnknownCharacters = modelRepository.CountTotalGenderlessCharacter(episodes),
+                TotalLocations = modelRepository.CountTotalLocation(episodes),
+                TotalMaleCharacters = modelRepository.CountTotalMaleCharacter(episodes),
+                UploadeFilePath = file.FileName,
+            };
+
+            return root;
         }
 
         
-
         [HttpGet]
         [Route("Log")]
         public async Task<IActionResult> Log()

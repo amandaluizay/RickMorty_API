@@ -1,6 +1,6 @@
-﻿namespace Interview_API.Models
+﻿namespace Interview_API.Models.Response
 {
-    public class OriginResponse
+    public class LocationResponse
     {
         public string name { get; set; }
         public string url { get; set; }

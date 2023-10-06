@@ -3,7 +3,6 @@ using System;
 using Interview_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -12,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Interview_API.Migrations
 {
     [DbContext(typeof(MeuDbContext))]
-    [Migration("20231005181920_datetime")]
-    partial class datetime
+    [Migration("20231006192911_inicial")]
+    partial class inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,22 +20,20 @@ namespace Interview_API.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.11")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Interview_API.Models.ReaderModel", b =>
+            modelBuilder.Entity("Interview_API.Models.LogModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreatedTimeStamp")
                         .HasColumnType("DATETIME");
 
                     b.Property<string>("FilePath")
                         .IsRequired()
-                        .HasColumnType("varchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 
